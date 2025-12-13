@@ -21,5 +21,5 @@ npm start
 ```
 or
 ```
-npm start
+npm server.js
 ```
