@@ -2,10 +2,10 @@
 const Pool = require('pg').Pool;
 const pool = new Pool({
     user: "postgres",
-    password: "henrilipping",
+    password: "Nunnukiisu135",
     database: "testWad",
     host: "localhost",
-    port: "5432"
+    port: "5433"
 });
 
 // Executes a SQL query
@@ -20,7 +20,7 @@ const execute = async(query) => {
     }
 };
 
-// Creates table in SQL
+// Creates users table in SQL
 const createTblQuery = `
     CREATE TABLE IF NOT EXISTS "users" (
         id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -32,6 +32,20 @@ const createTblQuery = `
 execute(createTblQuery).then(result => {
     if (result) {
         console.log('Table "users" is created');
+    }
+});
+
+//Creates posts table in SQL
+const createPostsTblQuery = `
+    CREATE TABLE IF NOT EXISTS "poststable" (
+        "id" SERIAL PRIMARY KEY,
+        "body" VARCHAR NOT NULL UNIQUE,
+        "created" TIMESTAMP DEFAULT NOW()
+    );`;
+
+execute(createPostsTblQuery).then(result => {
+    if (result) {
+        console.log('Table "poststable" is created'); 
     }
 });
 

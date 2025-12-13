@@ -23,11 +23,6 @@ const generateJWT = (id) => {
     return jwt.sign({ id }, secret, { expiresIn: maxAge })
 }
 
-app.listen(port, () => {
-    console.log("Server is listening to port " + port)
-});
-
-
 // To check whether a user is authinticated
 app.get('/auth/authenticate', async(req, res) => {
     console.log('authentication request has been arrived');
@@ -107,4 +102,75 @@ app.post('/auth/login', async(req, res) => {
 app.get('/auth/logout', (req, res) => {
     console.log('delete jwt request arrived');
     res.status(202).clearCookie('jwt').json({ "Msg": "cookie cleared" }).send
+});
+
+//-----------------------------
+//Get all posts from database
+app.get('/posts', async(req, res) => {
+    try {
+        console.log("get posts request has arrived");
+        const posts = await pool.query(
+            "SELECT * FROM poststable"
+        );
+        res.json(posts.rows);
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+
+// Get a single post by ID
+
+app.get('/posts/:id', async(req, res) => {
+    try {
+        const { id } = req.params;
+        console.log("Fetching a single post")
+        const post = await pool.query("SELECT * FROM poststable WHERE id = $1", [id]);
+        if (post.rows.length === 0) {
+            return res.status(404).json({ error: "Post not found" });
+        }
+        res.json(post.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+
+//Delete all posts
+app.delete('/posts', async(req, res) => {
+    try {
+        await pool.query("DELETE FROM poststable");
+        res.json({ message: "All posts deleted"});
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+
+//Delete a single post
+app.delete('/posts/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        console.log("delete a post request has arrived");
+        const deletepost = await pool.query("DELETE FROM poststable WHERE id = $1", [id]);
+        res.json(deletepost);
+    } catch (err) {
+        console.error(err.message);
+    }
+})
+
+//Updating an existing post
+app.put('/posts/:id', async(req, res) => {
+    try {
+        const { id } = req.params;
+        const { body } = req.body;
+        console.log("update request has arrived");
+        const updatepost = await pool.query(
+            "UPDATE poststable SET body = $2 WHERE id = $1 RETURNING *", [id, body]
+        );
+        res.json(updatepost.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+
+app.listen(port, () => {
+    console.log("Server is listening to port " + port)
 });
