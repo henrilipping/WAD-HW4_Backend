@@ -39,7 +39,7 @@ execute(createTblQuery).then(result => {
 const createPostsTblQuery = `
     CREATE TABLE IF NOT EXISTS "poststable" (
         "id" SERIAL PRIMARY KEY,
-        "body" VARCHAR NOT NULL UNIQUE,
+        "body" VARCHAR,
         "created" TIMESTAMP DEFAULT NOW()
     );`;
 
