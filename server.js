@@ -167,7 +167,22 @@ app.put('/posts/:id', async(req, res) => {
         console.error(err.message);
     }
 });
-
+//Add new post
+app.post('/posts', async(req, res) => {
+    try {
+        console.log("a post request has arrived");
+        const { body }= req.body;
+        const newpost = await pool.query(
+            "INSERT INTO poststable(body) values ($1) RETURNING *", [body]
+            // $1, $2, $3 are mapped to the first, second and third element of the passed array (post.title, post.body, post.urllink)
+            // The RETURNING keyword in PostgreSQL allows returning a value from the insert or update statement.
+            // using "" after the RETURNING keyword in PostgreSQL, will return everything
+        );
+        res.json(newpost);
+    } catch (err) {
+        console.error(err.message);
+    }
+});
 app.listen(port, () => {
     console.log("Server is listening to port " + port)
 });
