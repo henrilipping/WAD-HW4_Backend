@@ -125,9 +125,6 @@ app.get('/posts/:id', async(req, res) => {
         const { id } = req.params;
         console.log("Requested ID:", id);
         const post = await pool.query("SELECT * FROM poststable WHERE id = $1", [id]);
-        if (post.rows.length === 0) {
-            return res.status(404).json({ error: "Post not found" });
-        }
         res.json(post.rows[0]);
     } catch (err) {
         console.error(err.message);
@@ -165,7 +162,7 @@ app.put('/posts/:id', async(req, res) => {
         const updatepost = await pool.query(
             "UPDATE poststable SET body = $1 WHERE id = $2 RETURNING *", [body, id]
         );
-        res.json(updatepost.rows[0]);
+        res.json(updatepost);
     } catch (err) {
         console.error(err.message);
     }
