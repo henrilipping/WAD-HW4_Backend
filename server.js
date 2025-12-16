@@ -57,6 +57,17 @@ app.post('/auth/signup', async(req, res) => {
         console.log("a signup request has arrived");
         const { email, password } = req.body;
 
+        // Checks does this email is used in database
+        const existingUser = await pool.query(
+            "SELECT * FROM users WHERE email = $1", [email]
+        );
+
+        if (existingUser.rows.length > 0) {
+            return res
+                .status(400)
+                .json({ error: "User already exists" });
+        }
+
         const salt = await bcrypt.genSalt();
         const bcryptPassword = await bcrypt.hash(password, salt)
         const authUser = await pool.query(
