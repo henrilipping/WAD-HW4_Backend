@@ -146,7 +146,7 @@ app.delete('/posts/:id', async (req, res) => {
     try {
         const { id } = req.params;
         console.log("delete a post request has arrived");
-        const deletepost = await pool.query("DELETE FROM poststable WHERE id = $1", [id]);
+        const deletepost = await pool.query("DELETE FROM poststable WHERE id = $1", [id]); // used AI to find how to delete a single post from the database (prompt: How to delete a row in SQL using its id.) 
         res.json(deletepost);
     } catch (err) {
         console.error(err.message);
@@ -174,9 +174,6 @@ app.post('/posts', async(req, res) => {
         const { body }= req.body;
         const newpost = await pool.query(
             "INSERT INTO poststable(body) values ($1) RETURNING *", [body]
-            // $1, $2, $3 are mapped to the first, second and third element of the passed array (post.title, post.body, post.urllink)
-            // The RETURNING keyword in PostgreSQL allows returning a value from the insert or update statement.
-            // using "" after the RETURNING keyword in PostgreSQL, will return everything
         );
         res.json(newpost);
     } catch (err) {
