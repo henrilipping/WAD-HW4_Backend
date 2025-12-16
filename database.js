@@ -35,12 +35,12 @@ execute(createTblQuery).then(result => {
     }
 });
 
-//Creates posts table in SQL
+//Creates posts table in SQL, used AI to add the timestamp to the post in the database (prompt: In SQL how do i create a table that adds timestamp of the time a new item is added.)
 const createPostsTblQuery = `
     CREATE TABLE IF NOT EXISTS "poststable" (
         "id" SERIAL PRIMARY KEY,
         "body" VARCHAR,
-        "created" TIMESTAMP DEFAULT NOW()
+        "created" TIMESTAMP DEFAULT NOW() 
     );`;
 
 execute(createPostsTblQuery).then(result => {
